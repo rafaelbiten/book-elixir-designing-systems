@@ -3,13 +3,6 @@ defmodule Counter do
   Counter public API
   """
 
-  # Usage:
-  # iex> pid = Counter.start(0)
-  # iex> Counter.tick(pid)
-  # iex> Counter.tick(pid)
-  # iex> Counter.tick(pid)
-  # iex> Counter.state(pid) // 3
-
   def start(initial_count) do
     spawn(fn -> Counter.Server.run(initial_count) end)
   end
