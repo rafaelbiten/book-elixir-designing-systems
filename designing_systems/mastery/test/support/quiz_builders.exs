@@ -1,4 +1,6 @@
 defmodule QuizBuilders do
+  alias Mastery.Core.{Template, Question, Quiz}
+
   defmacro __using__(_options) do
     quote do
       alias Mastery.Core.{Template, Response, Quiz}
@@ -68,5 +70,3 @@ defmodule QuizBuilders do
     |> Question.new()
   end
 end
-
-alias Mastery.Core.{Template, Question, Quiz}
