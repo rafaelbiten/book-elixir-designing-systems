@@ -37,7 +37,7 @@ defmodule Mastery.Boundary.QuizManager do
         Quiz.add_template(quiz, template_fields)
       end)
 
-    {:replay, :ok, new_quizzes}
+    {:reply, :ok, new_quizzes}
   end
 
   def handle_call({:lookup_quiz_by_title, quiz_title}, _from, quizzes) do
