@@ -7,6 +7,8 @@ defmodule Mastery.Boundary.Validator do
   def optional(errors, fields, field_name, validator) do
     if Map.has_key?(fields, field_name) do
       require(errors, fields, field_name, validator)
+    else
+      errors
     end
   end
 
