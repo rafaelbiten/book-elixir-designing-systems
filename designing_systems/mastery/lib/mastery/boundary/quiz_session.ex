@@ -2,17 +2,46 @@ defmodule Mastery.Boundary.QuizSession do
   alias Mastery.Core.{Quiz, Response}
   use GenServer
 
+  def child_spec({quiz, email}) do
+    %{
+      id: {__MODULE__, {quiz, email}},
+      start: {__MODULE__, :start_link, [{quiz, email}]},
+      restart: :temporary
+    }
+  end
+
+  def start_link({quiz, email}) do
+    GenServer.start_link(__MODULE__, {quiz, email}, name: via({quiz.title, email}))
+  end
+
+  def via({_title, _email} = name) do
+    {:via, Registry, {Mastery.Registry.QuizSession, name}}
+  end
+
+  @doc """
+  Uses the supervisor directly to start a child, passing this __MODULE__ and
+  the required initial state {quiz, email}. In OTP applications, we usually
+  don't start processes directly; we start them through a supervisor that
+  will start and monitor our application. (designing-elixir-systems 7.3)
+  """
+  def take_quiz(quiz, email) do
+    DynamicSupervisor.start_child(
+      Mastery.Supervisor.QuizSession,
+      {__MODULE__, {quiz, email}}
+    )
+  end
+
   def init({quiz, email}) do
     {:ok, {quiz, email}}
   end
 
   # public api
-  def select_question(session) do
-    GenServer.call(session, :select_question)
+  def select_question(name) do
+    GenServer.call(via(name), :select_question)
   end
 
-  def answer_question(session, answer) do
-    GenServer.call(session, {:answer_question, answer})
+  def answer_question(name, answer) do
+    GenServer.call(via(name), {:answer_question, answer})
   end
 
   # implementation
