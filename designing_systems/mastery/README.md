@@ -1,6 +1,28 @@
 # Mastery
 
-**TODO: Add description**
+This project was built by following the book [Designing Elixir Systems With OTP](https://pragprog.com/titles/jgotp/designing-elixir-systems-with-otp/) by James Edward Gray and Bruce A. Tate.
+
+## Running an example on iex
+
+```elixir
+$ iex -S mix
+
+alias Mastery.Examples.Math
+
+email1 = "email1@test.com"
+email2 = "email2@test.com"
+title = Math.quiz.title
+
+Mastery.build_quiz Math.quiz_fields
+Mastery.add_template title, Math.template_fields
+
+user1 = Mastery.take_quiz title, email1
+user2 = Mastery.take_quiz title, email2
+
+Mastery.select_question user1
+Mastery.select_question user2
+Mastery.answer_question user1, "6"
+```
 
 ## Installation
 
