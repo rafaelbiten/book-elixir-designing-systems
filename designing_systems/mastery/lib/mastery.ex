@@ -1,7 +1,15 @@
 defmodule Mastery do
-  alias Mastery.Boundary.{QuizSession, QuizManager}
+  alias Mastery.Boundary.{QuizSession, QuizManager, Proctor}
   alias Mastery.Boundary.Validator
   alias Mastery.Core.Quiz
+
+  def schedule_quiz(quiz, templates, start_at, end_at) do
+    with :ok <- Validator.Quiz.errors(quiz),
+         true <- Enum.all?(templates, &(:ok == Validator.Template.errors(&1))),
+         :ok <- Proctor.schedule_quiz(quiz, templates, start_at, end_at),
+         do: :ok,
+         else: (error -> error)
+  end
 
   def build_quiz(fields) do
     with :ok <- Validator.Quiz.errors(fields),
