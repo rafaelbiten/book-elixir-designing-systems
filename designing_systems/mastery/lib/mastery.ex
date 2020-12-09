@@ -2,6 +2,7 @@ defmodule Mastery do
   alias Mastery.Boundary.{QuizSession, QuizManager, Proctor}
   alias Mastery.Boundary.Validator
   alias Mastery.Core.Quiz
+  alias Mastery.Examples.Math
 
   def schedule_quiz(quiz, templates, start_at, end_at) do
     with :ok <- Validator.Quiz.errors(quiz),
@@ -40,5 +41,26 @@ defmodule Mastery do
 
   def answer_question(session, answer) do
     QuizSession.answer_question(session, answer)
+  end
+
+  # EXAMPLE
+
+  def run_example_worker() do
+    now = DateTime.utc_now()
+    five_seconds_from_now = DateTime.add(now, 5)
+    one_minute_from_now = DateTime.add(now, 60)
+
+    Mastery.schedule_quiz(
+      Mastery.Examples.Math.quiz_fields(),
+      [Math.template_fields()],
+      five_seconds_from_now,
+      one_minute_from_now
+    )
+  end
+
+  def check_example_worker() do
+    %{title: title} = Math.quiz_fields()
+    Mastery.take_quiz(title, "my@email.com")
+    QuizSession.active_sessions_for(title)
   end
 end
