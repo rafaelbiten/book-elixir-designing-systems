@@ -7,6 +7,8 @@ defmodule MasteryPersistence.Application do
 
   def start(_type, _args) do
     children = [
+      MasteryPersistence.Repo
+
       # Starts a worker by calling: MasteryPersistence.Worker.start_link(arg)
       # {MasteryPersistence.Worker, arg}
     ]
