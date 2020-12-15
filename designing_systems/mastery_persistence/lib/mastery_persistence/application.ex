@@ -6,6 +6,8 @@ defmodule MasteryPersistence.Application do
   use Application
 
   def start(_type, _args) do
+    IO.puts("Staring Mastery Persistence Layer")
+
     children = [
       MasteryPersistence.Repo
 
