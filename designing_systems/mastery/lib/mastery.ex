@@ -4,6 +4,8 @@ defmodule Mastery do
   alias Mastery.Core.Quiz
   alias Mastery.Examples.Math
 
+  @persistence_fn Application.get_env(:mastery, :persistence_fn)
+
   def schedule_quiz(quiz, templates, start_at, end_at) do
     with :ok <- Validator.Quiz.errors(quiz),
          true <- Enum.all?(templates, &(:ok == Validator.Template.errors(&1))),
@@ -39,8 +41,8 @@ defmodule Mastery do
     QuizSession.select_question(session)
   end
 
-  def answer_question(session, answer) do
-    QuizSession.answer_question(session, answer)
+  def answer_question(session, answer, persistence_fn \\ @persistence_fn) do
+    QuizSession.answer_question(session, answer, persistence_fn)
   end
 
   # EXAMPLE
