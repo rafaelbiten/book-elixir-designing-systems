@@ -62,6 +62,7 @@ defmodule MasteryTest do
 
   defp enable_persistence() do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(MasteryPersistence.Repo, {:shared, self()})
   end
 
   defp response_count() do
