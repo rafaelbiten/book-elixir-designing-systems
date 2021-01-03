@@ -47,16 +47,17 @@ defmodule Mastery do
 
   # EXAMPLE
 
-  def run_example_worker() do
+  def run_example_worker(start_in \\ 5, end_in \\ 60, notify_pid \\ nil) do
     now = DateTime.utc_now()
-    five_seconds_from_now = DateTime.add(now, 5)
-    one_minute_from_now = DateTime.add(now, 60)
+    start_in_seconds_from_now = DateTime.add(now, start_in)
+    end_in_seconds_from_now = DateTime.add(now, end_in)
 
     Mastery.schedule_quiz(
       Mastery.Examples.Math.quiz_fields(),
       [Math.template_fields()],
-      five_seconds_from_now,
-      one_minute_from_now
+      start_in_seconds_from_now,
+      end_in_seconds_from_now,
+      notify_pid
     )
   end
 
@@ -64,5 +65,20 @@ defmodule Mastery do
     %{title: title} = Math.quiz_fields()
     Mastery.take_quiz(title, "my@email.com")
     QuizSession.active_sessions_for(title)
+  end
+
+  def check_pid_notification() do
+    pid = spawn(Receiver, :run, [])
+    run_example_worker(1, 2, pid)
+  end
+end
+
+defmodule Receiver do
+  def run do
+    receive do
+      message -> IO.inspect(message)
+    end
+
+    run()
   end
 end
